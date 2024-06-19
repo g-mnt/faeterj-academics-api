@@ -11,6 +11,6 @@ class Article extends Model
     use HasFactory;
 
     public function author(): BelongsTo {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
