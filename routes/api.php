@@ -12,5 +12,5 @@ Route::get('/self', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('article', ArticleController::class)->only(['index']);
+    Route::apiResource('articles', ArticleController::class)->only(['index']);
 });
