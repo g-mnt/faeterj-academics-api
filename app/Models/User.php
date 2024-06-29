@@ -14,6 +14,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const PROFESSOR_ROLE = 'Professor';
+    public const STUDENT_ROLE = 'Aluno';
 
     protected $fillable = [
         'name',

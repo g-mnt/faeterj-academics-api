@@ -10,6 +10,15 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'document_path',
+        'user_id'
+    ];
+
+    public const ARTICLE_PATH = 'articles';
+
     public function author(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id');
     }

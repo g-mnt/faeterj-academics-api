@@ -13,7 +13,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('document_url');
+            $table->string('document_path');
+            $table->boolean('approved')->default(false);
             $table->foreignIdFor(User::class);
             $table->timestamps();
         });
