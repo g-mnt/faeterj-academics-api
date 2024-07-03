@@ -12,5 +12,6 @@ Route::get('/self', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('articles/favorites', [ArticleController::class, 'favorites'])->name('articles.favorites');
     Route::apiResource('articles', ArticleController::class)->only(['index', 'store']);
 });

@@ -8,6 +8,7 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\File;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -20,6 +21,14 @@ class ArticleController extends Controller
         return ArticleResource::collection(Article::query()
             ->with('author')
             ->paginate());
+    }
+
+    public function favorites(): ResourceCollection
+    {
+        /** @var User */
+        $user = auth()->user();
+        logger('uepa');
+        return ArticleResource::collection($user->favoriteArticles()->paginate());
     }
 
     public function store(ArticleStoreRequest $request)
