@@ -8,7 +8,6 @@ use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\User;
 use Exception;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\File;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -27,8 +26,25 @@ class ArticleController extends Controller
     {
         /** @var User */
         $user = auth()->user();
-        logger('uepa');
         return ArticleResource::collection($user->favoriteArticles()->paginate());
+    }
+
+    public function toggleFavorite(Article $article): JsonResponse
+    {
+        /** @var User */
+        $user = auth()->user();
+        $alreadyFavorite = $user->favoriteArticles()->wherePivot('article_id', $article->id)->exists();
+        
+        if($alreadyFavorite){
+            $user->favoriteArticles()->detach($article);
+        }else{
+            $user->favoriteArticles()->syncWithoutDetaching($article);
+        }
+
+        return response()->json([
+            'message' => $alreadyFavorite ? 'Favorito removido com sucesso' : 'Artigo adicionado aos favoritos', 
+            'data' => ArticleResource::make($article)
+        ]);
     }
 
     public function store(ArticleStoreRequest $request)
