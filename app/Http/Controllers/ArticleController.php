@@ -29,6 +29,12 @@ class ArticleController extends Controller
         return ArticleResource::collection($user->favoriteArticles()->paginate());
     }
 
+    public function self(): ResourceCollection {
+        /** @var User */
+        $user = auth()->user();
+        return ArticleResource::collection($user->articles()->paginate());
+    }
+
     public function toggleFavorite(Article $article): JsonResponse
     {
         /** @var User */
