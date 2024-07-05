@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\ArticleStatusesEnum;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,12 @@ class Article extends Model
         'title',
         'description',
         'document_path',
+        'status',
         'user_id'
+    ];
+
+    protected $casts =[
+        'status' => ArticleStatusesEnum::class
     ];
 
     public const ARTICLE_PATH = 'articles';

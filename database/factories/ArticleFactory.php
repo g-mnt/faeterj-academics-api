@@ -12,7 +12,7 @@ class ArticleFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(3),
-            'description' => $this->faker->paragraph(),
+            'description' => $this->faker->paragraph(2),
             'document_path' => $this->faker->url(),
             'user_id' => User::factory()
         ];

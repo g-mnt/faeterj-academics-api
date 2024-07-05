@@ -18,7 +18,8 @@ class ArticleResource extends JsonResource
             'description' => $this->description,
             'document_url' => $this->document_url,
             'author' => AuthorResource::make($this->author),
-            'favorite' => $user->favoriteArticles()->wherePivot('article_id', $this->id)->exists()
+            'favorite' => $user->favoriteArticles()->wherePivot('article_id', $this->id)->exists(),
+            'status' => $this->status
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ArticleStatusesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleStoreRequest;
 use App\Http\Resources\ArticleResource;
@@ -62,13 +63,14 @@ class ArticleController extends Controller
         try{
             $file = $request->file('pdf');
             $path = Storage::putFile(Article::ARTICLE_PATH, $file);
-
             $article = Article::query()->create([
                 'title' => $request->validated('title'),
                 'description' => $request->validated('description'),
                 'document_path' => $path,
                 'user_id' => $user->id,
-                'approved' => $user->role == User::PROFESSOR_ROLE
+                'status' => $user->role === User::PROFESSOR_ROLE ? 
+                    ArticleStatusesEnum::Approved : 
+                    ArticleStatusesEnum::Pending
             ]);
 
             return response()->json([
