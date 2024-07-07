@@ -14,6 +14,7 @@ Route::get('/self', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('articles/favorites', [ArticleController::class, 'favorites'])->name('articles.favorites');
     Route::get('articles/self', [ArticleController::class, 'self'])->name('articles.self');
+    Route::get('articles/pending', [ArticleController::class, 'pendingArticles'])->name('articles.pending');
     Route::get('articles/toggle-favorite/{article}', [ArticleController::class, 'toggleFavorite'])->name('articles.toggle-favorite');
-    Route::apiResource('articles', ArticleController::class)->only(['index', 'store']);
+    Route::apiResource('articles', ArticleController::class);
 });

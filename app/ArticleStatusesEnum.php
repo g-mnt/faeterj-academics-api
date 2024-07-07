@@ -6,7 +6,7 @@ enum ArticleStatusesEnum: string
 {
     case Pending = 'Pendente';
     case Approved = 'Aprovado';
-    case Rejected = 'Reprovado';
+    case Rejected = 'Rejeitado';
 
     public static function values(): array
     {

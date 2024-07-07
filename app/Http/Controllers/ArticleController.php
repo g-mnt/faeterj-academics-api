@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ArticleStatusesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleStoreRequest;
+use App\Http\Requests\ArticleUpdateRequest;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Models\User;
@@ -18,7 +19,7 @@ class ArticleController extends Controller
 {
     public function index(): ResourceCollection
     {
-        return ArticleResource::collection(Article::query()
+        return ArticleResource::collection(Article::approved()
             ->with('author')
             ->paginate());
     }
@@ -28,6 +29,12 @@ class ArticleController extends Controller
         /** @var User */
         $user = auth()->user();
         return ArticleResource::collection($user->favoriteArticles()->paginate());
+    }
+
+    public function pendingArticles(): ResourceCollection {
+        return ArticleResource::collection(Article::pending()
+        ->with('author')
+        ->paginate());
     }
 
     public function self(): ResourceCollection {
@@ -83,6 +90,59 @@ class ArticleController extends Controller
             ->json(
                 ['message' => 'Algo deu errado na criação do artigo.'],
                  JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    public function update(ArticleUpdateRequest $request, Article $article)
+    {
+        /** @var User  */
+        $user = auth()->user();
+
+        abort_unless(
+            $user->role === User::PROFESSOR_ROLE || $article->author->id === $user->id, 
+            JsonResponse::HTTP_FORBIDDEN, 
+            'Permissão negada'
+        );
+
+        try{
+            $article->update($request->validated());
+            
+            return response()->json([
+                'message' => 'Artigo atualizado com sucesso', 
+                'data' => ArticleResource::make($article)
+            ]);
+        }catch(Exception $e){
+            logger($e->getMessage());
+            return response()
+            ->json(
+                ['message' => 'Algo deu errado na atualização do artigo.'],
+                 JsonResponse::HTTP_BAD_REQUEST
+            );
+        }
+    }
+
+    public function destroy(Article $article): JsonResponse {
+        /** @var User $user */
+        $user = auth()->user();
+        
+        abort_unless(
+            $user->role === User::PROFESSOR_ROLE || $article->author->id === $user->id, 
+            JsonResponse::HTTP_FORBIDDEN, 
+            'Permissão negada'
+        );
+
+        try{
+            Storage::delete($article->document_path);
+            $article->delete();
+            
+            return response()->json(
+                ['message' => 'Artigo excluído com sucesso.']
+            );
+        }catch(Exception $e){
+            return response()->json(
+                ['message' => 'Algo deu errado ao excluir artigo.'], 
+                JsonResponse::HTTP_BAD_REQUEST
             );
         }
     }
