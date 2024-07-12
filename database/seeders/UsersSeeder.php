@@ -13,13 +13,15 @@ class UsersSeeder extends Seeder
         User::factory()->create([
             'name' => 'Gabriel Monteiro',
             'email' => 'gabriel@faeterj.com',
-            'password' => Hash::make("password")
+            'password' => Hash::make("password"),
+            'role' => 'Aluno',
         ]);
 
         User::factory()->create([
             'name' => 'Bruno Williams',
             'email' => 'bruno@faeterj.com',
-            'password' => Hash::make("password")
+            'password' => Hash::make("password"),
+            'role' => 'Aluno',
         ]);
     }
 }
